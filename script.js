@@ -190,72 +190,170 @@
   }
 
   /* ---------------------------------------------------------
-     ROTOR TRANSITION — canvas texture + scroll clip-path wipe
+     ROTOR TRANSITION — Chaocipher wheel + scroll clip-path wipe
      --------------------------------------------------------- */
-  function drawRotor(canvas) {
+  var CHAO_LEFT = "PKWBNDXLCTEMRVGOYSFAQUHZJI";
+  var CHAO_RIGHT = "HJYSQOAPTZLMDXCFUVGRKWNIBE";
+  var E_FULL_TURNS = 3;
+  var TAU = Math.PI * 2;
+
+  function spinTurns(scrollProg, turns) {
+    return scrollProg * turns * TAU;
+  }
+
+  function drawChaoRing(ctx, cx, cy, radius, letters, rotation, opts) {
+    opts = opts || {};
+    var count = letters.length;
+    var tickLen = opts.tickLen || 10;
+    var fontSize = opts.fontSize || 13;
+    var alpha = opts.alpha || 0.85;
+    var lineAlpha = opts.lineAlpha || 0.22;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rotation);
+
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(255,255,255," + lineAlpha + ")";
+    ctx.lineWidth = opts.lineWidth || 1.4;
+    ctx.stroke();
+
+    if (opts.fill) {
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.fillStyle = opts.fill;
+      ctx.fill();
+    }
+
+    ctx.font = "600 " + fontSize + "px JetBrains Mono, monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    for (var i = 0; i < count; i++) {
+      var ang = (i / count) * Math.PI * 2 - Math.PI / 2;
+      var cos = Math.cos(ang);
+      var sin = Math.sin(ang);
+
+      ctx.strokeStyle = "rgba(255,255,255," + (lineAlpha + 0.06) + ")";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(cos * (radius - tickLen), sin * (radius - tickLen));
+      ctx.lineTo(cos * (radius + 4), sin * (radius + 4));
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(255,255,255," + alpha + ")";
+      ctx.fillText(letters[i], cos * (radius + fontSize + 8), sin * (radius + fontSize + 8));
+    }
+
+    ctx.restore();
+  }
+
+  function paintChaocipherWheel(canvas, scrollProg) {
     var ctx = canvas.getContext("2d");
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    function paint() {
-      var w = canvas.offsetWidth, h = canvas.offsetHeight;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var w = canvas.offsetWidth;
+    var h = canvas.offsetHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // dark base + faint grid
-      ctx.fillStyle = "#161616";
-      ctx.fillRect(0, 0, w, h);
-      ctx.strokeStyle = "rgba(255,255,255,0.035)";
-      ctx.lineWidth = 1;
-      for (var gx = 0; gx < w; gx += 44) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke(); }
-      for (var gy = 0; gy < h; gy += 44) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke(); }
+    ctx.fillStyle = "#161616";
+    ctx.fillRect(0, 0, w, h);
 
-      var cx = w * 0.5, cy = h * 0.5;
-      var maxR = Math.min(w, h) * 0.42;
-      var rings = 4;
-      // concentric rotor rings with lettered ticks
-      for (var r = 0; r < rings; r++) {
-        var radius = maxR * (0.42 + r * 0.2);
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.strokeStyle = "rgba(255,255,255," + (0.10 - r * 0.012) + ")";
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
-
-        var ticks = 26;
-        ctx.font = (12 - r) + "px JetBrains Mono, monospace";
-        for (var t = 0; t < ticks; t++) {
-          var ang = (t / ticks) * Math.PI * 2 + r * 0.12;
-          var lx = cx + Math.cos(ang) * radius;
-          var ly = cy + Math.sin(ang) * radius;
-          ctx.fillStyle = "rgba(255,255,255," + (0.16 - r * 0.02) + ")";
-          ctx.save();
-          ctx.translate(lx, ly);
-          ctx.rotate(ang + Math.PI / 2);
-          ctx.fillText(GLYPHS[(t + r * 5) % 26], -4, 0);
-          ctx.restore();
-        }
-      }
-      // center hub
+    ctx.strokeStyle = "rgba(255,255,255,0.035)";
+    ctx.lineWidth = 1;
+    for (var gx = 0; gx < w; gx += 44) {
       ctx.beginPath();
-      ctx.arc(cx, cy, maxR * 0.16, 0, Math.PI * 2);
-      ctx.strokeStyle = "rgba(255,255,255,0.22)";
-      ctx.lineWidth = 1.5;
+      ctx.moveTo(gx, 0);
+      ctx.lineTo(gx, h);
       ctx.stroke();
-      ctx.fillStyle = "rgba(255,255,255,0.5)";
-      ctx.font = "700 18px JetBrains Mono, monospace";
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.fillText("E", cx, cy);
-      ctx.textAlign = "start"; ctx.textBaseline = "alphabetic";
     }
-    paint();
-    window.addEventListener("resize", paint);
+    for (var gy = 0; gy < h; gy += 44) {
+      ctx.beginPath();
+      ctx.moveTo(0, gy);
+      ctx.lineTo(w, gy);
+      ctx.stroke();
+    }
+
+    var cx = w * 0.5;
+    var cy = h * 0.5;
+    var baseR = Math.min(w, h) * 0.34;
+    var hubRot = spinTurns(scrollProg, E_FULL_TURNS);
+
+    drawChaoRing(ctx, cx - baseR * 0.34, cy, baseR * 0.92, CHAO_LEFT, -spinTurns(scrollProg, 2), {
+      fontSize: 12,
+      alpha: 0.72,
+      lineAlpha: 0.18,
+      tickLen: 8,
+      fill: "rgba(255,255,255,0.025)"
+    });
+    drawChaoRing(ctx, cx + baseR * 0.34, cy, baseR * 0.92, CHAO_RIGHT, spinTurns(scrollProg, 2), {
+      fontSize: 12,
+      alpha: 0.72,
+      lineAlpha: 0.18,
+      tickLen: 8,
+      fill: "rgba(255,255,255,0.025)"
+    });
+
+    drawChaoRing(ctx, cx, cy, baseR * 1.18, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", spinTurns(scrollProg, 2), {
+      fontSize: 15,
+      alpha: 0.9,
+      lineAlpha: 0.28,
+      lineWidth: 1.8,
+      tickLen: 12
+    });
+    drawChaoRing(ctx, cx, cy, baseR * 0.82, CHAO_LEFT, -spinTurns(scrollProg, 3), {
+      fontSize: 13,
+      alpha: 0.78,
+      lineAlpha: 0.2,
+      tickLen: 10
+    });
+    drawChaoRing(ctx, cx, cy, baseR * 0.48, CHAO_RIGHT, spinTurns(scrollProg, 4), {
+      fontSize: 11,
+      alpha: 0.62,
+      lineAlpha: 0.16,
+      tickLen: 8
+    });
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(hubRot);
+    ctx.beginPath();
+    ctx.arc(0, 0, baseR * 0.22, 0, Math.PI * 2);
+    ctx.fillStyle = "#161616";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, 0, baseR * 0.12, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(255,255,255,0.18)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = "rgba(255,255,255,0.82)";
+    ctx.font = "700 16px JetBrains Mono, monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("E", 0, 0);
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - baseR * 1.35, cy);
+    ctx.lineTo(cx + baseR * 1.35, cy);
+    ctx.stroke();
   }
 
   function initRotorBand() {
     var band = document.querySelector(".rotor-band");
     if (!band) return;
-    var photo = band.querySelector(".rotor-photo");
-    var cover = band.querySelector(".rotor-cover");
+    var canvas = band.querySelector(".rotor-canvas");
     var capText = band.querySelector(".rotor-caption .rc-text");
+    var scrollProg = 0;
+
+    if (!canvas) return;
 
     var capScr = capText ? new Scrambler(capText) : null;
     var capTarget = capText ? capText.getAttribute("data-decode") : "";
@@ -266,20 +364,27 @@
       capText.textContent = seed;
     }
 
+    function renderWheel() {
+      paintChaocipherWheel(canvas, scrollProg);
+    }
+
     function onScroll() {
       var rect = band.getBoundingClientRect();
       var total = band.offsetHeight - window.innerHeight;
-      var prog = Math.min(Math.max(-rect.top / total, 0), 1);
-      // wipe the cover open across the middle of the scroll range
-      var wipe = Math.min(Math.max((prog - 0.08) / 0.5, 0), 1);
-      if (cover) cover.style.clipPath = "inset(0 0 0 " + (wipe * 100) + "%)";
-      // subtle parallax drift on the photo
-      if (photo) photo.style.transform = "translateY(" + (prog - 0.5) * 40 + "px) scale(1.08)";
-      // decode the caption once revealed
-      if (!capDone && capScr && prog > 0.4) { capDone = true; capScr.setText(capTarget, { seq: true, dur: 28 }); }
+      scrollProg = Math.min(Math.max(-rect.top / total, 0), 1);
+      canvas.style.transform = "scale(" + (1.02 + scrollProg * 0.06) + ")";
+      renderWheel();
+      if (!capDone && capScr && scrollProg > 0.2) {
+        capDone = true;
+        capScr.setText(capTarget, { seq: true, dur: 28 });
+      }
     }
-    if (reduceMotion) { if (cover) cover.style.display = "none"; if (capText) capText.textContent = capTarget; }
-    else {
+
+    window.addEventListener("resize", renderWheel);
+    if (reduceMotion) {
+      if (capText) capText.textContent = capTarget;
+      renderWheel();
+    } else {
       window.addEventListener("scroll", onScroll, { passive: true });
       onScroll();
     }
@@ -307,15 +412,173 @@
   }
 
   /* ---------------------------------------------------------
-     MEMBER CARD HOVER FLICKER
+     MEMBER CARD HOVER FLICKER + CLICK-TO-FOCUS ZOOM
      --------------------------------------------------------- */
   function initMembers() {
-    document.querySelectorAll(".member").forEach(function (card) {
+    var membersGrid = document.querySelector(".members");
+    if (!membersGrid) return;
+
+    var FLIP_MS = 520;
+    var CLOSE_MS = 420;
+    var cards = membersGrid.querySelectorAll(".member");
+    var activeCard = null;
+    var placeholder = null;
+    var isClosing = false;
+    var backdrop = document.createElement("div");
+    backdrop.className = "member-focus-backdrop";
+    backdrop.setAttribute("aria-hidden", "true");
+    document.body.appendChild(backdrop);
+
+    function removePlaceholder() {
+      if (placeholder && placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
+      placeholder = null;
+    }
+
+    function resetCard(card) {
+      if (!card) return;
+      card.classList.remove("is-active", "is-animating", "is-closing");
+      card.style.transform = "";
+      card.style.opacity = "";
+      card.style.transitionDelay = "";
+      card.setAttribute("aria-pressed", "false");
+    }
+
+    function clearSiblingDelays() {
+      cards.forEach(function (c) {
+        c.style.transitionDelay = "";
+      });
+    }
+
+    function finishClose() {
+      if (!activeCard) return;
+      var card = activeCard;
+      card.classList.remove("is-active", "is-animating", "is-closing");
+      card.style.transform = "";
+      card.style.opacity = "0";
+      card.style.transitionDelay = "";
+      card.setAttribute("aria-pressed", "false");
+      membersGrid.classList.remove("is-focused", "is-closing");
+      backdrop.classList.remove("is-visible");
+      document.body.classList.remove("member-focus-open");
+      removePlaceholder();
+      clearSiblingDelays();
+      activeCard = null;
+      isClosing = false;
+
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          card.style.transitionDelay = "0.12s";
+          card.style.opacity = "";
+          window.setTimeout(function () {
+            card.style.transitionDelay = "";
+          }, 500);
+        });
+      });
+    }
+
+    function closeFocus(instant) {
+      if (!activeCard || isClosing) return;
+      var card = activeCard;
+
+      if (instant || reduceMotion || !placeholder) {
+        finishClose();
+        return;
+      }
+
+      isClosing = true;
+      backdrop.classList.remove("is-visible");
+      membersGrid.classList.add("is-closing");
+      card.classList.add("is-closing");
+
+      cards.forEach(function (c, i) {
+        if (c === card) return;
+        c.style.transitionDelay = (0.07 * i) + "s";
+      });
+
+      window.setTimeout(finishClose, CLOSE_MS);
+    }
+
+    function openFocus(card) {
+      var originRect = card.getBoundingClientRect();
+      removePlaceholder();
+      placeholder = document.createElement("div");
+      placeholder.className = "member-placeholder";
+      placeholder.style.height = originRect.height + "px";
+      card.parentNode.insertBefore(placeholder, card);
+
+      activeCard = card;
+      membersGrid.classList.add("is-focused");
+      card.classList.add("is-active");
+      card.setAttribute("aria-pressed", "true");
+      backdrop.classList.add("is-visible");
+      document.body.classList.add("member-focus-open");
+
+      if (reduceMotion) return;
+
+      card.classList.add("is-animating");
+      card.style.transform = "translate(-50%, -50%)";
+      card.offsetHeight;
+
+      var expandedRect = card.getBoundingClientRect();
+      var originCx = originRect.left + originRect.width / 2;
+      var originCy = originRect.top + originRect.height / 2;
+      var expandedCx = expandedRect.left + expandedRect.width / 2;
+      var expandedCy = expandedRect.top + expandedRect.height / 2;
+      var scale = originRect.width / expandedRect.width;
+
+      card.style.transform =
+        "translate(calc(-50% + " + (originCx - expandedCx) + "px), calc(-50% + " + (originCy - expandedCy) + "px)) scale(" + scale + ")";
+      card.offsetHeight;
+
+      requestAnimationFrame(function () {
+        card.style.transform = "translate(-50%, -50%) scale(1)";
+      });
+
+      window.setTimeout(function () {
+        if (activeCard !== card) return;
+        card.classList.remove("is-animating");
+        card.style.transform = "";
+      }, FLIP_MS + 40);
+    }
+
+    function focusCard(card) {
+      if (isClosing) return;
+      if (activeCard === card) {
+        closeFocus(false);
+        return;
+      }
+      if (activeCard) closeFocus(true);
+      openFocus(card);
+    }
+
+    cards.forEach(function (card) {
       var nameEl = card.querySelector(".member-name");
-      if (!nameEl) return;
-      var target = nameEl.textContent.trim();
-      card.addEventListener("mouseenter", function () { quickFlicker(nameEl, target); });
+      if (nameEl) {
+        var target = nameEl.textContent.trim();
+        card.addEventListener("mouseenter", function () {
+          if (!membersGrid.classList.contains("is-focused")) quickFlicker(nameEl, target);
+        });
+      }
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-pressed", "false");
+      card.addEventListener("click", function (e) {
+        e.stopPropagation();
+        focusCard(card);
+      });
+      card.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          focusCard(card);
+        }
+      });
     });
+
+    backdrop.addEventListener("click", function () { closeFocus(false); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeFocus(false);
+    });
+    window.addEventListener("resize", function () { closeFocus(true); });
   }
 
   /* ---------------------------------------------------------
@@ -341,19 +604,76 @@
   }
 
   /* ---------------------------------------------------------
-     CONTACT FORM (front-end only)
+     CONTACT FORM
      --------------------------------------------------------- */
   function initForm() {
     var form = document.querySelector(".contact-form");
     if (!form) return;
     var note = form.querySelector(".form-note");
+    var submitBtn = form.querySelector('button[type="submit"]');
+    var defaultNote = note ? note.textContent : "";
+    var apiUrl = form.getAttribute("data-api-url") || "";
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      note.textContent = "// TRANSMISSION ENCRYPTED — MESSAGE QUEUED";
-      note.classList.add("ok");
-      form.reset();
-      setTimeout(function () { note.textContent = "// Front-end demo — no message is actually sent."; note.classList.remove("ok"); }, 4000);
+      if (!apiUrl) {
+        if (note) note.textContent = "// Contact API URL is not configured.";
+        return;
+      }
+
+      var payload = {
+        name: form.querySelector('[name="name"]').value.trim(),
+        email: form.querySelector('[name="email"]').value.trim(),
+        subject: form.querySelector('[name="subject"]').value.trim(),
+        message: form.querySelector('[name="message"]').value.trim()
+      };
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending...";
+      }
+      if (note) {
+        note.textContent = "// ENCRYPTING TRANSMISSION...";
+        note.classList.remove("ok");
+      }
+
+      fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          if (!res.ok || !data.ok) {
+            throw new Error(data.error || "Failed to send message.");
+          }
+          if (note) {
+            note.textContent = "// TRANSMISSION SENT — WE WILL REPLY SOON";
+            note.classList.add("ok");
+          }
+          form.reset();
+        });
+      }).catch(function (err) {
+        if (note) {
+          note.textContent = "// SEND FAILED — EMAIL enigma.codebusters@gmail.com DIRECTLY";
+          note.classList.remove("ok");
+        }
+        console.error("[contact]", err);
+      }).finally(function () {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send Message";
+        }
+        window.setTimeout(function () {
+          if (note && defaultNote) {
+            note.textContent = defaultNote;
+            note.classList.remove("ok");
+          } else if (note) {
+            note.textContent = "";
+            note.classList.remove("ok");
+          }
+        }, 5000);
+      });
     });
   }
 

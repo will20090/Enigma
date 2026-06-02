@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="assets/enigma-logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/enigma-logo.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -41,7 +43,7 @@
     <div class="hero-content">
       <h1 class="hero-title" data-text="ENIGMA" aria-label="ENIGMA">ENIGMA</h1>
       <p class="hero-sub">Codebusters Test Writers</p>
-      <a class="btn btn-primary hero-cta" href="#" target="_blank" rel="noopener">Test Writing Tool <span class="arr">&rarr;</span></a>
+      <a class="btn btn-primary hero-cta" href="https://code-test-writer.onrender.com/" target="_blank" rel="noopener">Test Writing Tool <span class="arr">&rarr;</span></a>
     </div>
     <div class="hero-scroll" aria-hidden="true">
       <span>SCROLL</span>
@@ -75,25 +77,25 @@
           <img class="member-photo" src="assets/luke-choi.png" alt="Luke Choi" />
           <div>
             <h3 class="member-name">Luke Choi</h3>
-            <p class="member-bio">[ Bio placeholder — Luke, add a couple of lines about yourself: favorite cipher, what you write, a fun fact. ]</p>
+            <p class="member-bio">Hi everyone, I'm Luke from Carmel, Indiana! As a 3x State Champion and National Competitor, I have a huge passion for physics, engineering, and inquiry events (codes will always be my absolute favorite). When I'm not studying, I love playing Wordbites!</p>
           </div>
           <span class="role-tag">Carmel HS '27</span>
         </article>
 
         <article class="member reveal" data-delay="3">
-          <div class="monogram">WH</div>
+          <img class="member-photo" src="assets/william-huang.png" alt="William Huang" />
           <div>
             <h3 class="member-name">William Huang</h3>
-            <p class="member-bio">[ Bio placeholder — William, add a couple of lines about yourself: favorite cipher, what you write, a fun fact. ]</p>
+            <p class="member-bio">Hello, I'm William, and I am from duPont Manual in KY! I am a 2x Nationals medalist and I have competed in SciOly since 6th grade. My favorite events are Codebusters and XPD, and I write and ES for both of them! Outside of school, I like coding, math, and playing piano.</p>
           </div>
           <span class="role-tag">duPont Manual '27</span>
         </article>
 
         <article class="member reveal" data-delay="3">
-          <div class="monogram">JA</div>
+          <img class="member-photo" src="assets/jacob-anil.png" alt="Jacob Anil" />
           <div>
             <h3 class="member-name">Jacob Anil</h3>
-            <p class="member-bio">[ Bio placeholder — Jacob, add a couple of lines about yourself: favorite cipher, what you write, a fun fact. ]</p>
+            <p class="member-bio">Hello, I'm Jacob from DuPont Manual, KY. I love Codebusters (nats medalist) and any physics event. Outside of SciOly I love linguistics, aerospace engineering, scrabble, reading, and running!</p>
           </div>
           <span class="role-tag">duPont Manual '27</span>
         </article>
@@ -104,18 +106,11 @@
   <!-- ===================== ROTOR TRANSITION ===================== -->
   <div class="rotor-band" aria-hidden="true">
     <div class="rotor-sticky">
-      <img
-        class="rotor-photo"
-        src="assets/solon-2026-meetup-hq.png"
-        srcset="assets/solon-2026-meetup.png 555w, assets/solon-2026-meetup-hq.png 2220w"
-        sizes="100vw"
-        alt="Enigma team at Solon 2026 group meetup"
-      />
+      <canvas class="rotor-canvas"></canvas>
       <div class="rotor-scrim"></div>
-      <div class="rotor-cover"></div>
       <div class="rotor-caption">
-        <span class="rc-index">SOLON 2026 GROUP MEETUP</span>
-        <p class="rc-text" data-decode="[ CAPTION PLACEHOLDER — ADD A LINE ABOUT THIS MEETUP ]">[ CAPTION PLACEHOLDER — ADD A LINE ABOUT THIS MEETUP ]</p>
+        <span class="rc-index">CHAOCIPHER · SCROLL TO TURN</span>
+        <p class="rc-text" data-decode="BREAKING INTO THE REST OF THE WEBSITE...">BREAKING INTO THE REST OF THE WEBSITE...</p>
       </div>
     </div>
   </div>
@@ -182,42 +177,38 @@
       </div>
 
       <div class="resources">
-        <a class="res-card reveal" data-delay="1" href="#" target="_blank" rel="noopener">
+        <a class="res-card reveal" data-delay="1" href="https://code-test-writer.onrender.com/" target="_blank" rel="noopener">
           <span class="res-num">R / 01</span>
           <h3 class="res-title">Test Writing Tool</h3>
-          <p class="res-desc">Our in-house Codebusters Test Builder — compose, encode, and export full tests.</p>
+          <p class="res-desc">Beginner-friendly Codebusters test builder that creates high quality LaTeX files.</p>
           <span class="res-arrow">LAUNCH <span class="tk">&rarr;</span></span>
         </a>
-        <a class="res-card reveal" data-delay="2" href="#" target="_blank" rel="noopener">
+        <a class="res-card reveal" data-delay="2" href="https://discord.gg/csFNxSsHPA" target="_blank" rel="noopener">
           <span class="res-num">R / 02</span>
-          <h3 class="res-title">Cipher Reference</h3>
-          <p class="res-desc">Quick guides for Aristocrat, Patristocrat, Hill, Baconian, Nihilist and more.</p>
+          <h3 class="res-title">CorNSO Discord Server</h3>
+          <p class="res-desc">Unofficial Codebusters scrimmage where competitors nationwide face off while also sharing tips and tricks. (500 members)</p>
+          <span class="res-arrow">JOIN <span class="tk">&rarr;</span></span>
+        </a>
+        <a class="res-card reveal" data-delay="3" href="archive.html">
+          <span class="res-num">R / 03</span>
+          <h3 class="res-title">Test Archive</h3>
+          <p class="res-desc">A growing collection of past Enigma tests that serve as excellent practice material for competitors and coaches.</p>
           <span class="res-arrow">OPEN <span class="tk">&rarr;</span></span>
         </a>
-        <a class="res-card reveal" data-delay="3" href="#" target="_blank" rel="noopener">
-          <span class="res-num">R / 03</span>
-          <h3 class="res-title">Practice Tests</h3>
-          <p class="res-desc">A growing archive of full-length practice exams with worked solutions.</p>
-          <span class="res-arrow">DOWNLOAD <span class="tk">&rarr;</span></span>
-        </a>
-        <a class="res-card reveal" data-delay="1" href="#" target="_blank" rel="noopener">
+        <div class="res-card res-card-wip reveal" data-delay="1" aria-label="Event Supervisor Guide — work in progress">
+          <span class="res-wip-badge">&#9888; WORK IN PROGRESS</span>
           <span class="res-num">R / 04</span>
-          <h3 class="res-title">Frequency Tables</h3>
-          <p class="res-desc">English letter, bigram, and trigram frequencies for faster cryptanalysis.</p>
-          <span class="res-arrow">VIEW <span class="tk">&rarr;</span></span>
-        </a>
-        <a class="res-card reveal" data-delay="2" href="https://www.soinc.org/" target="_blank" rel="noopener">
+          <h3 class="res-title">Event Supervisor Guide</h3>
+          <p class="res-desc">Everything writers need to know in order to run an awesome in-person or satellite Codebusters competition.</p>
+          <span class="res-arrow res-arrow-muted">COMING SOON</span>
+        </div>
+        <div class="res-card res-card-wip reveal" data-delay="2" aria-label="Competitor Guide — work in progress">
+          <span class="res-wip-badge">&#9888; WORK IN PROGRESS</span>
           <span class="res-num">R / 05</span>
-          <h3 class="res-title">Science Olympiad</h3>
-          <p class="res-desc">Official rules, the event manual, and the current Codebusters guidelines.</p>
-          <span class="res-arrow">EXTERNAL <span class="tk">&rarr;</span></span>
-        </a>
-        <a class="res-card reveal" data-delay="3" href="#" target="_blank" rel="noopener">
-          <span class="res-num">R / 06</span>
-          <h3 class="res-title">Solver Toolkit</h3>
-          <p class="res-desc">Recommended online solvers, calculators, and timing strategies for the event.</p>
-          <span class="res-arrow">EXPLORE <span class="tk">&rarr;</span></span>
-        </a>
+          <h3 class="res-title">Competitor Guide</h3>
+          <p class="res-desc">Strategies, cipher breakdowns, and tips for competitors at every level.</p>
+          <span class="res-arrow res-arrow-muted">COMING SOON</span>
+        </div>
       </div>
     </div>
   </section>
@@ -234,11 +225,16 @@
         <div class="contact-info reveal" data-delay="1">
           <div class="ci-block">
             <h3>Direct</h3>
-            <a class="email" href="mailto:team@enigma-codebusters.org">team@enigma-codebusters.org</a>
+            <a class="email" href="mailto:enigma.codebusters@gmail.com">enigma.codebusters@gmail.com</a>
           </div>
         </div>
 
-        <form class="contact-form reveal" data-delay="2" novalidate>
+        <form
+          class="contact-form reveal"
+          data-delay="2"
+          data-api-url="https://enigma-contact-api.onrender.com/api/contact"
+          novalidate
+        >
           <div class="form-row">
             <div class="field">
               <label for="f-name">Name</label>
@@ -259,7 +255,7 @@
           </div>
           <div class="form-foot">
             <button class="btn btn-primary" type="submit">Send Message</button>
-            <span class="form-note">// Front-end demo — no message is actually sent.</span>
+            <span class="form-note"></span>
           </div>
         </form>
       </div>
@@ -270,32 +266,53 @@
   <footer class="footer" id="about" data-screen-label="Footer">
     <div class="container">
       <div class="footer-top">
-        <div>
-          <div class="footer-word">ENIGMA</div>
-          <p class="footer-tag">Codebusters test writers for Science Olympiad. Built clean, encoded sharp.</p>
+        <div class="footer-word">ENIGMA</div>
+        <div class="footer-mid">
+          <div class="footer-col">
+            <h4>Navigate</h4>
+            <ul>
+              <li><a href="#who">Who We Are</a></li>
+              <li><a href="#accomplishments">Accomplishments</a></li>
+              <li><a href="#resources">Resources</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-thanks">
+            <h4 class="footer-thanks-title">Special Thanks</h4>
+            <p class="footer-thanks-lead">To John Toebes and his team for making Codebusters the greatest event of all time.</p>
+            <ul class="footer-thanks-list">
+              <!-- Add one <li>Name</li> per person (30–40 names) -->
+            </ul>
+          </div>
         </div>
-        <div class="footer-col">
-          <h4>The Team</h4>
-          <ul>
-            <li>Alan Cai — NCSSM '27</li>
-            <li>Luke Choi — Carmel HS '27</li>
-            <li>William Huang — duPont Manual '27</li>
-            <li>Jacob Anil — duPont Manual '27</li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Navigate</h4>
-          <ul>
-            <li><a href="#who">Who We Are</a></li>
-            <li><a href="#accomplishments">Accomplishments</a></li>
-            <li><a href="#resources">Resources</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
+        <div class="footer-quotes">
+          <h4 class="footer-quotes-title">Favorite Quotes</h4>
+          <div class="footer-quote-grid">
+            <figure class="footer-quote">
+              <blockquote class="footer-quote-text">"Why cry over spilled juice when there's a fresh carton on the kitchen counter."</blockquote>
+              <figcaption>Alan Cai <span>NCSSM '27</span></figcaption>
+            </figure>
+            <figure class="footer-quote">
+              <blockquote class="footer-quote-text">"[ Luke's favorite quote ]"</blockquote>
+              <figcaption>Luke Choi <span>Carmel HS '27</span></figcaption>
+            </figure>
+            <figure class="footer-quote">
+              <blockquote class="footer-quote-text">"[ William's favorite quote ]"</blockquote>
+              <figcaption>William Huang <span>duPont Manual '27</span></figcaption>
+            </figure>
+            <figure class="footer-quote">
+              <blockquote class="footer-quote-text">"[ Jacob's favorite quote ]"</blockquote>
+              <figcaption>Jacob Anil <span>duPont Manual '27</span></figcaption>
+            </figure>
+          </div>
         </div>
       </div>
       <div class="footer-bottom">
         <span>© 2026 ENIGMA</span>
-        <span>MADE WITH LOVE BY THE ENIGMA TEAM</span>
+        <span class="footer-credit">
+          <span class="footer-credit-default">MADE WITH LOVE BY THE ENIGMA TEAM</span>
+          <span class="footer-credit-hover">BUT MOSTLY ALAN CAI LOL</span>
+        </span>
       </div>
     </div>
   </footer>
